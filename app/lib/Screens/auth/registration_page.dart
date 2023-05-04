@@ -1,9 +1,8 @@
-import 'package:app/Screens/home/home_page.dart';
+import 'package:app/Screens/auth/account_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../Providers/app_provider.dart';
-import '../../main.dart';
 import '../Commons/notification_widget.dart';
 
 class RegistrationPage extends ConsumerWidget{
@@ -27,20 +26,6 @@ class RegistrationPage extends ConsumerWidget{
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      TextFormField(
-                        onChanged: registrationController.setName,
-                        decoration: InputDecoration(
-                          label: const Text("Name"),
-                          hintText: "Name",
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 5),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                        validator: (value) => registrationController.validate(value, 'Name'),
-                      ),
-                      const SizedBox(height: 20),
                       TextFormField(
                         onChanged: registrationController.setEmail,
                         decoration: InputDecoration(
@@ -116,13 +101,17 @@ class RegistrationPage extends ConsumerWidget{
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
                                     )),
-                                onPressed: () {
-                                  registrationController.submit(_formKey,false,(result){
-                                    logger.i(result ? "no error":"error");
-                                    if(result){
-                                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage(),));
+                                onPressed: (){
+                                  registrationController.submit(_formKey,false,(user) async{
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AccountInformationPage(),));
+                                    // if(await authService.isUserExists(user.uid)){
+                                    //
+                                    // }
+                                    /*if(result){
+
                                     }
-                                  });
+
+*/                                  });
                                 },
                                 child: const Text("Sign Up")),
                           ),

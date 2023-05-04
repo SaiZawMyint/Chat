@@ -6,7 +6,7 @@ typedef NotificationCallback = Function(NotificationState state);
 class NotificationController extends StateNotifier<List<NotificationState>> {
   NotificationController() : super([]);
 
-  addNotification(Type type, String title, String message,
+  addNotification(NotificationType type, String title, String message,
       [NotificationCallback? callback]) {
     int unique = DateTime.now().microsecond;
     final notification = NotificationState(
@@ -35,7 +35,7 @@ class NotificationController extends StateNotifier<List<NotificationState>> {
 
 class NotificationState {
   final int id;
-  final Type type;
+  final NotificationType type;
   final String title;
   final String message;
 
@@ -46,7 +46,7 @@ class NotificationState {
       required this.message});
 }
 
-enum Type {
+enum NotificationType {
   info,
   error,
   warning,

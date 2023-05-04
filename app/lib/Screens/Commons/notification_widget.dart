@@ -14,36 +14,39 @@ class NotificationWidget extends ConsumerWidget{
     SafeArea(
       child: Stack(
         children: [
-          Card(
-            elevation: 6,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-              leading: CircleAvatar(
-                backgroundColor:  notifications.last.type == Type.info
-                    ? Colors.blue
-                    : notifications.last.type == Type.warning
-                    ? Colors.orangeAccent
-                    : notifications.last.type == Type.error
-                    ? Colors.redAccent
-                    : Colors.blue,
-                child: Text("${notifications.length}"),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Card(
+              elevation: 6,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-              title: Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Text(notifications.last.title),
-              ),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Text(notifications.last.message),
-              ),
-              trailing: IconButton(
-                onPressed: (){
-                  ref.read(AppProvider.notificationsProvider.notifier).removeNotification(notifications.last.id);
-                },
-                icon: const Icon(Icons.close),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                leading: CircleAvatar(
+                  backgroundColor:  notifications.last.type == NotificationType.info
+                      ? Colors.blue
+                      : notifications.last.type == NotificationType.warning
+                      ? Colors.orangeAccent
+                      : notifications.last.type == NotificationType.error
+                      ? Colors.redAccent
+                      : Colors.blue,
+                  child: Text("${notifications.length}"),
+                ),
+                title: Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Text(notifications.last.title),
+                ),
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Text(notifications.last.message),
+                ),
+                trailing: IconButton(
+                  onPressed: (){
+                    ref.read(AppProvider.notificationsProvider.notifier).removeNotification(notifications.last.id);
+                  },
+                  icon: const Icon(Icons.close),
+                ),
               ),
             ),
           ),

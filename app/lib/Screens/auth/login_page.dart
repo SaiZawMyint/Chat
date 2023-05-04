@@ -1,7 +1,6 @@
 import 'package:app/Providers/app_provider.dart';
 import 'package:app/Screens/Commons/notification_widget.dart';
 import 'package:app/Screens/auth/registration_page.dart';
-import 'package:app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -99,9 +98,8 @@ class LoginPage extends ConsumerWidget {
                                   authController.submit(
                                       _formKey,
                                       true,
-                                      (result) => {
-                                            logger.i(
-                                                result ? "no error" : "error")
+                                      (user) => {
+
                                           });
                                 },
                                 child: const Text("Sign In")),
