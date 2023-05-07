@@ -1,6 +1,7 @@
-import 'package:app/Screens/auth/account_info.dart';
+import 'package:app/Screens/Commons/common_functions.dart';
+import 'package:app/Screens/home/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../Providers/app_provider.dart';
 import '../Commons/notification_widget.dart';
@@ -37,7 +38,7 @@ class RegistrationPage extends ConsumerWidget{
                             borderRadius: BorderRadius.circular(15),
                           ),
                         ),
-                        validator: (value) => registrationController.validate(value, 'Email'),
+                        validator: (value) => CommonFunctions.validate(value, 'Email'),
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
@@ -56,7 +57,7 @@ class RegistrationPage extends ConsumerWidget{
                           ),
                         ),
                         obscureText: true,
-                        validator: (value) => registrationController.validate(value, "Password"),
+                        validator: (value) => CommonFunctions.validate(value, "Password"),
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
@@ -101,17 +102,14 @@ class RegistrationPage extends ConsumerWidget{
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
                                     )),
-                                onPressed: (){
-                                  registrationController.submit(_formKey,false,(user) async{
-                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AccountInformationPage(),));
-                                    // if(await authService.isUserExists(user.uid)){
-                                    //
-                                    // }
-                                    /*if(result){
-
+                                onPressed: () async{
+                                    if (_formKey.currentState!.validate()) {
+                                      final authService = ref.watch(AppProvider.firebaseServiceProvider);
+                                      final user = await authService.register(registrationController.email, registrationController.password);
+                                      if(user != null){
+                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage(),));
+                                      }
                                     }
-
-*/                                  });
                                 },
                                 child: const Text("Sign Up")),
                           ),

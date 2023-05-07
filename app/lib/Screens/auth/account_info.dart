@@ -1,8 +1,9 @@
 import 'package:app/Providers/app_provider.dart';
+import 'package:app/Screens/Commons/common_functions.dart';
 import 'package:app/Screens/Commons/widget_utils.dart';
 import 'package:app/Screens/home/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../Commons/notification_widget.dart';
@@ -18,6 +19,8 @@ class AccountInformationPage extends ConsumerWidget {
     final state = ref.watch(AppProvider.authController);
     final authService = ref.watch(AppProvider.firebaseServiceProvider);
     _dobController.text = DateFormat("MM/dd/yyyy").format(authController.dob??DateTime.now());
+    // authController.setEmail(authController.getLoggedEmail()??"");
+    state.copyWith(email: authController.getLoggedEmail()??"");
     return Scaffold(
       body: Stack(
         children: [
@@ -51,7 +54,7 @@ class AccountInformationPage extends ConsumerWidget {
                                 ),
                               ),
                               validator: (value) =>
-                                  authController.validate(value, "Name"),
+                                  CommonFunctions.validate(value, "Name"),
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
@@ -69,7 +72,7 @@ class AccountInformationPage extends ConsumerWidget {
                                 ),
                               ),
                               validator: (value) =>
-                                  authController.validate(value, 'Email'),
+                                  CommonFunctions.validate(value, 'Email'),
                             ),
                             const SizedBox(height: 20),
                             Column(
@@ -113,7 +116,7 @@ class AccountInformationPage extends ConsumerWidget {
                                 ),
                               ),
                               validator: (value) =>
-                                  authController.validate(value, 'Gender'),
+                                  CommonFunctions.validate(value, 'Gender'),
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
@@ -152,9 +155,12 @@ class AccountInformationPage extends ConsumerWidget {
                                                 BorderRadius.circular(20),
                                           )),
                                       onPressed: () async{
-                                       if(await authController.fillAccountInformation(_formKey)){
-                                         Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => HomePage(),));
-                                       }
+                                        if(_formKey.currentState!.validate()) {
+                                          final isCompleted = await ref.read(AppProvider.firebaseServiceProvider).accountInformation(state);
+                                          if(isCompleted) {
+                                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => HomePage(),));
+                                          }
+                                        }
                                       },
                                       child: const Text("Confirm")),
                                 ),

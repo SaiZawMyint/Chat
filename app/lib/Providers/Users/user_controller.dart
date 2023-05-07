@@ -1,4 +1,4 @@
-import 'package:app/Models/Users/user.dart';
+import 'package:app/Models/Users/user_model.dart';
 import 'package:app/Services/User/user_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

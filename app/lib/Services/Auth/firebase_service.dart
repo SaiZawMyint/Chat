@@ -1,10 +1,10 @@
-import 'package:app/Models/Users/user.dart';
+import 'package:app/Models/Users/user_model.dart';
 import 'package:app/Providers/Commons/notifications.dart';
 import 'package:app/Providers/app_provider.dart';
 import 'package:app/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class FirebaseService {
   final Ref ref;

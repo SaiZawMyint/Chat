@@ -1,5 +1,5 @@
 import 'package:app/main.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 typedef NotificationCallback = Function(NotificationState state);
 
@@ -45,7 +45,6 @@ class NotificationState {
       required this.title,
       required this.message});
 }
-
 enum NotificationType {
   info,
   error,

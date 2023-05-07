@@ -11,14 +11,13 @@ class UserModel {
     this.dob
   });
 
-  late final String id;
+  final String id;
   final String name;
   final String email;
   final String password;
   final String bio;
   final DateTime? dob;
   final String gender;
-
 
 
   UserModel copyWith({
@@ -48,7 +47,6 @@ class UserModel {
       dob = d.toDate();
     }
     return UserModel(
-      id: json['id'],
       name: json["name"],
       email: json["email"],
       bio: json["bio"],

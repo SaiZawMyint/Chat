@@ -1,8 +1,9 @@
 import 'package:app/Providers/app_provider.dart';
+import 'package:app/Screens/Commons/common_functions.dart';
 import 'package:app/Screens/Commons/notification_widget.dart';
 import 'package:app/Screens/auth/registration_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class LoginPage extends ConsumerWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -37,7 +38,7 @@ class LoginPage extends ConsumerWidget {
                           ),
                         ),
                         validator: (value) =>
-                            authController.validate(value, 'Email'),
+                            CommonFunctions.validate(value, 'Email'),
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
@@ -57,7 +58,7 @@ class LoginPage extends ConsumerWidget {
                         ),
                         obscureText: true,
                         validator: (value) =>
-                            authController.validate(value, "Password"),
+                            CommonFunctions.validate(value, "Password"),
                       ),
                       // Text("${notifications.length} notifications!"),
                       const SizedBox(height: 20),
@@ -94,13 +95,11 @@ class LoginPage extends ConsumerWidget {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
                                     )),
-                                onPressed: () {
-                                  authController.submit(
-                                      _formKey,
-                                      true,
-                                      (user) => {
-
-                                          });
+                                onPressed: () async{
+                                  if (_formKey.currentState!.validate()) {
+                                      final authService = ref.read(AppProvider.firebaseServiceProvider);
+                                      await authService.signIn(authController.email, authController.password);
+                                    }
                                 },
                                 child: const Text("Sign In")),
                           ),
