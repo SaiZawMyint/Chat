@@ -1,10 +1,12 @@
 import 'package:app/Screens/Commons/widget_utils.dart';
+import 'package:app/Screens/Drawer/main_drawer.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../Providers/app_provider.dart';
 import 'Commons/navs/app_navigation_bar.dart';
+import 'Commons/notification_widget.dart';
 import 'Commons/pages.dart';
 
 class MainPage extends HookConsumerWidget {
@@ -12,38 +14,29 @@ class MainPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authService = ref.watch(AppProvider.firebaseServiceProvider);
     final pageProvider = ref.watch(AppProvider.routeProvider.notifier);
     final pageState = ref.watch(AppProvider.routeProvider);
     final title = ref.watch(AppProvider.titleProvider);
-    final lists = ref.read(AppProvider.appNavigators);
+    final lists = ref.watch(AppProvider.appNavigators);
     final pageController = ref.watch(AppProvider.carouselControllerProvider);
-
+    final navigationBarState = ref.watch(AppProvider.navigationBarController);
+    final navigationBarController =
+        ref.watch(AppProvider.navigationBarController.notifier);
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        // backgroundColor: const Color(0xfff11347),
-        leading: IconButton(
-            onPressed: () => {},
-            icon: const Icon(
-              Icons.menu,
-              color: Colors.black,
-            )),
+        leading: Builder(builder: (context) {
+          return IconButton(
+              onPressed: () => {Scaffold.of(context).openDrawer()},
+              icon: const Icon(
+                Icons.menu,
+              ));
+        }),
         title: Text(
           title,
-          style: const TextStyle(fontSize: 18, color: Colors.black),
+          style: const TextStyle(
+            fontSize: 18,
+          ),
         ),
-        actions: [
-          IconButton(
-              onPressed: () async {
-                await authService.signOut();
-                AppProvider.refresh();
-              },
-              icon: const Icon(
-                Icons.logout,
-                color: Colors.black,
-              ))
-        ],
       ),
       body: Stack(
         children: [
@@ -57,6 +50,7 @@ class MainPage extends HookConsumerWidget {
               viewportFraction: 1,
               onPageChanged: (index, reason) {
                 pageProvider.changePage(index);
+                navigationBarController.isVisible = true;
               },
             ),
             items: Pages.mainPages.map((page) {
@@ -70,8 +64,10 @@ class MainPage extends HookConsumerWidget {
               );
             }).toList(),
           ),
-          Positioned(
-            bottom: 0,
+          AnimatedPositioned(
+            bottom: navigationBarState.isVisible ? 0 : -80,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
             child: Row(
               children: [
                 Container(
@@ -79,7 +75,7 @@ class MainPage extends HookConsumerWidget {
                     minWidth: MediaQuery.of(context).size.width,
                     maxWidth: MediaQuery.of(context).size.width,
                   ),
-                  padding: const EdgeInsets.all(24),
+                  padding: const EdgeInsets.all(10),
                   child: Card(
                     elevation: 8,
                     color: WidgetUtils.appColors,
@@ -91,6 +87,7 @@ class MainPage extends HookConsumerWidget {
                           horizontal: 8, vertical: 10),
                       child: AppNavigationBar(
                         pageChange: (index, state) {
+                          // logger.i("change state $index to $state");
                           lists[index].input?.change(true);
                           if (index != state) {
                             pageProvider.changePage(index);
@@ -99,6 +96,7 @@ class MainPage extends HookConsumerWidget {
                               duration: const Duration(milliseconds: 500),
                               curve: Curves.easeInOut,
                             );
+                            navigationBarController.isVisible = true;
                           }
                           Future.delayed(const Duration(seconds: 1), () {
                             lists[index].input?.change(false);
@@ -111,8 +109,20 @@ class MainPage extends HookConsumerWidget {
               ],
             ),
           ),
+          Positioned(
+            top: 10,
+            child: Center(
+              child: Container(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width,
+                    maxHeight: MediaQuery.of(context).size.height * 0.6,
+                  ),
+                  child: const NotificationWidget()),
+            ),
+          ),
         ],
       ),
+      drawer: const MainDrawer(),
     );
   }
 }

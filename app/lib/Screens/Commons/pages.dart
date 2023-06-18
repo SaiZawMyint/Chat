@@ -11,5 +11,5 @@ class Pages{
     const HomePage(),
     const FriendsPage(),
   ];
-  static final List<String> pageNames = ["Messages", "Explore", "Recent", "Notifications", "Friends"];
+  static final List<String> pageNames = ["Messages", "People", "Recent", "Notifications", "Friends"];
 }

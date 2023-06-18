@@ -19,7 +19,6 @@ class UserModel {
   final DateTime? dob;
   final String gender;
 
-
   UserModel copyWith({
     String? id,
     String? name,

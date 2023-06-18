@@ -1,9 +1,14 @@
+import 'dart:ui';
+
 import 'package:app/Providers/app_provider.dart';
 import 'package:app/Screens/Commons/common_functions.dart';
 import 'package:app/Screens/Commons/notification_widget.dart';
+import 'package:app/Screens/Commons/widget_utils.dart';
 import 'package:app/Screens/auth/registration_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:rive/rive.dart' as rive;
+
 
 class LoginPage extends ConsumerWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -16,6 +21,12 @@ class LoginPage extends ConsumerWidget {
       // backgroundColor: Colors.blue,
       body: Stack(
         children: [
+          const rive.RiveAnimation.asset("assets/rives/shapes.riv", fit: BoxFit.cover,),
+          Positioned.fill(child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+            child: const SizedBox(),
+          ),),
+          const rive.RiveAnimation.asset("assets/rives/messenger_icon.riv"),
           SingleChildScrollView(
             child: SizedBox(
               height: MediaQuery.of(context).size.height,
@@ -67,8 +78,10 @@ class LoginPage extends ConsumerWidget {
                         children: [
                           Expanded(
                             child: ElevatedButton(
+
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.grey,
+                                  elevation: 1,
+                                    backgroundColor: Colors.black12,
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 15),
                                     shape: RoundedRectangleBorder(
@@ -90,6 +103,7 @@ class LoginPage extends ConsumerWidget {
                           Expanded(
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
+                                  backgroundColor: WidgetUtils.appColors,
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 15),
                                     shape: RoundedRectangleBorder(

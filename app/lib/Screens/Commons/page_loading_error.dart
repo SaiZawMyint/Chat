@@ -10,8 +10,7 @@ class PageLoadingError extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
+    return SafeArea(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -23,7 +22,6 @@ class PageLoadingError extends StatelessWidget{
             ],
           ),
         ),
-      ),
     );
   }
 

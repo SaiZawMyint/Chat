@@ -1,21 +1,22 @@
-import 'package:app/Screens/Commons/widget_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class UserTile extends StatelessWidget {
   final VoidCallback onTap;
   final String name;
-  final String bio;
+  final Widget contentText;
   final List<Widget>? trails;
   final List<Widget>? actions;
+  final bool? center;
 
   const UserTile({
     Key? key,
     required this.onTap,
     required this.name,
-    required this.bio,
+    required this.contentText,
     this.trails,
-    this.actions
+    this.actions,
+    this.center
   }) : super(key: key);
 
   @override
@@ -24,16 +25,21 @@ class UserTile extends StatelessWidget {
 
       onTap: onTap,
       child: Container(
-        color: WidgetUtils.appColors.shade50,
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        decoration: BoxDecoration(
+          // color: Colors.black12,
+          borderRadius: BorderRadius.circular(5)
+        ),
         margin: const EdgeInsets.only(bottom: 3),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: center != null && center! ? CrossAxisAlignment.center: CrossAxisAlignment.start,
             children: [
               Stack(
                 children: [
                   CircleAvatar(
+                    radius: 25,
                     backgroundColor: Colors.blueGrey.shade200,
                     child: SvgPicture.asset("assets/icons/profile-icon.svg"),
                   ),
@@ -54,8 +60,8 @@ class UserTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Text(bio),
+                    Text(name, style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
+                    contentText,
                     SizedBox(height: actions == null ? 0 : 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -65,6 +71,7 @@ class UserTile extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(width: 10,),
               Row(
                 children: trails == null ? [const SizedBox()] : trails!.map((e) => e).toList(),
               ),

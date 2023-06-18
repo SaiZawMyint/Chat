@@ -1,7 +1,6 @@
 import 'package:app/Providers/app_provider.dart';
 import 'package:app/Screens/Commons/common_functions.dart';
 import 'package:app/Screens/Commons/widget_utils.dart';
-import 'package:app/Screens/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -11,6 +10,7 @@ import '../Commons/notification_widget.dart';
 class AccountInformationPage extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   final _dobController = TextEditingController();
+
   AccountInformationPage({super.key});
 
   @override
@@ -18,9 +18,10 @@ class AccountInformationPage extends ConsumerWidget {
     final authController = ref.watch(AppProvider.authController.notifier);
     final state = ref.watch(AppProvider.authController);
     final authService = ref.watch(AppProvider.firebaseServiceProvider);
-    _dobController.text = DateFormat("MM/dd/yyyy").format(authController.dob??DateTime.now());
+    _dobController.text =
+        DateFormat("MM/dd/yyyy").format(authController.dob ?? DateTime.now());
     // authController.setEmail(authController.getLoggedEmail()??"");
-    state.copyWith(email: authController.getLoggedEmail()??"");
+    state.copyWith(email: authController.getLoggedEmail() ?? "");
     return Scaffold(
       body: Stack(
         children: [
@@ -120,19 +121,29 @@ class AccountInformationPage extends ConsumerWidget {
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
-                              controller: _dobController,
-                              onChanged: authController.setName,
-                              readOnly: true,
-                              decoration: WidgetUtils.dobDecoration(
-                                  context,
-                                  "Dob",
-                                  DateTime.now(),
-                                  (datetime){
-                                    _dobController.text = DateFormat("MM/dd/yyyy").format(datetime);
-                                    authController.setDob(datetime);
-                                  }
-                            )
-                            ),
+                                controller: _dobController,
+                                onChanged: authController.setName,
+                                readOnly: true,
+                                onTap: () => WidgetUtils.onSelectDate(
+                                        context,
+                                        _dobController.text.isEmpty
+                                            ? DateTime.now()
+                                            : _dobController.text, (datetime) {
+                                      _dobController.text =
+                                          DateFormat("MM/dd/yyyy")
+                                              .format(datetime);
+                                      authController.setDob(datetime);
+                                    }),
+                                decoration: WidgetUtils.dobDecoration(
+                                    context,
+                                    "Dob",
+                                    _dobController.text.isEmpty
+                                        ? DateTime.now()
+                                        : _dobController.text, (datetime) {
+                                  _dobController.text =
+                                      DateFormat("MM/dd/yyyy").format(datetime);
+                                  authController.setDob(datetime);
+                                })),
                             // Text("${notifications.length} notifications!"),
                             const SizedBox(height: 20),
                           ],
@@ -154,11 +165,14 @@ class AccountInformationPage extends ConsumerWidget {
                                             borderRadius:
                                                 BorderRadius.circular(20),
                                           )),
-                                      onPressed: () async{
-                                        if(_formKey.currentState!.validate()) {
-                                          final isCompleted = await ref.read(AppProvider.firebaseServiceProvider).accountInformation(state);
-                                          if(isCompleted) {
-                                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => HomePage(),));
+                                      onPressed: () async {
+                                        if (_formKey.currentState!.validate()) {
+                                          final isCompleted = await ref
+                                              .read(AppProvider
+                                                  .firebaseServiceProvider)
+                                              .accountInformation(state);
+                                          if (isCompleted) {
+                                            await AppProvider.refresh();
                                           }
                                         }
                                       },
@@ -170,8 +184,9 @@ class AccountInformationPage extends ConsumerWidget {
                               children: [
                                 Expanded(
                                   child: TextButton(
-                                    onPressed: () {
-                                      authService.signOut();
+                                    onPressed: () async {
+                                      await authService.signOut();
+                                      AppProvider.refresh();
                                     },
                                     child: const Text("Logout"),
                                   ),

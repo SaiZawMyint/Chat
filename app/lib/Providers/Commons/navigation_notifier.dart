@@ -22,7 +22,4 @@ class NavigationNotifier extends StateNotifier<List<RiveAsset>>{
         stateMachineName: "USER_Interactivity",
         title: "Profile"),
   ]);
-
-
-
 }
